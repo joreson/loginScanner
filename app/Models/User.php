@@ -20,6 +20,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'facultyId',
+        'jobTitle',
+        'campus',
+        'department',
+        'profile_image',
+        'status',
+        'label'
+
     ];
 
     /**

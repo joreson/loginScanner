@@ -1,28 +1,45 @@
 <?php
 
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function showLoginForms()
     {
-        $this->middleware('auth');
+        return view('logins');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
+    public function logins(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if ($request->email === 'admin@gmail.com' && $request->password === '12345678' ) {
+            return redirect()->intended('/admin');
+
+        } 
+       
+         else if(Auth::attempt($credentials)) {
+        
+
+            return redirect()->intended('/dashboard');
+        }
+        
+        return redirect()->back()->withErrors(['email' => 'Invalid email or password.'])->withInput($request->only('email'));
+    }
+
+    public function logouts(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect('/');
+    }
     public function index()
     {
-        return view('home');
+        $user = auth()->user(); // Fetch authenticated user
+        return view('dashboard', compact('user'));
     }
+
+   
 }
